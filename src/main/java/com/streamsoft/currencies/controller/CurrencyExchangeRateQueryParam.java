@@ -61,6 +61,39 @@ public final class CurrencyExchangeRateQueryParam {
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
+	
+	
+
+	public CurrencyExchangeRateQueryParam(String table, Integer topCount) {
+		this.table = table;
+		this.code = null;
+		this.topCount = topCount;
+		this.date = null;
+		this.startDate = null;
+		this.endDate = null;
+	}
+	
+	
+
+	public CurrencyExchangeRateQueryParam(String table, LocalDate date) {
+		this.table = table;
+		this.code = null;
+		this.topCount = null;
+		this.date = date;
+		this.startDate = null;
+		this.endDate = null;
+	}
+	
+	
+
+	public CurrencyExchangeRateQueryParam(String table, LocalDate startDate, LocalDate endDate) {
+		this.table = table;
+		this.code = null;
+		this.topCount = null;
+		this.date = null;
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
 
 	public String getTable() {
 		return table;
