@@ -1,94 +1,52 @@
 package com.streamsoft.currencies.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import com.streamsoft.currencies.client.NBPGetCurrencyRatesHttpClient;
-import com.streamsoft.currencies.controller.CurrencyExchangeRateQueryParam;
+import com.streamsoft.currencies.controller.NBPCurrencyRatesQueryDto;
 import com.streamsoft.currencies.domain.CurrencyRate;
-import com.streamsoft.currencies.domain.NBPRatesFromCurrencyDto;
-import com.streamsoft.currencies.domain.NBPRatesFromTableDto;
-import com.streamsoft.currencies.mapper.NBPCurrencyRatesDomainMapper;
+import com.streamsoft.currencies.mapper.NBPCurrencyRatesFromHttpClientMapper;
 
-@Service
-public class NBPGetCurrencyRatesService implements GetCurrencyRatesService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NBPGetCurrencyRatesHttpClient.class);
+public class NBPGetCurrencyRatesService {
+	@Autowired
+	private NBPGetCurrencyRatesHttpClient httpClient;
 	
 	@Autowired
-	private NBPGetCurrencyRatesHttpClient client;
+	private
+	NBPCurrencyRatesFromHttpClientMapper httpResponseMapper;
 	
-	@Autowired
-	private NBPCurrencyRatesDomainMapper mapper;
-	
-	private final static String NBP_API_ENDPOINT = "http://api.nbp.pl/api/exchangerates/";
-	private final static String TABLES = "tables/";
-	private final static String RATES = "rates/";
-	
-	@Override
-	public List<CurrencyRate> getCurrencyRates(final CurrencyExchangeRateQueryParam queryParam) throws com.streamsoft.currencies.exceptions.NoCurrencyRatesException {
-		List<CurrencyRate> currencyRates;
-		if (queryParam.getCode().isPresent()) {
-			currencyRates = requestCurrencyRates(queryParam);
-		} else {
-			currencyRates = requestTableRates(queryParam);
-		}
-		if (currencyRates.size() != 0) {
-			return currencyRates;
-		} else {
-			LOGGER.error("No currency rates for querry.");
-			throw new com.streamsoft.currencies.exceptions.NoCurrencyRatesException("There are no currency rates for this querry!");
-		}
+	public List<CurrencyRate> getCurrencyRatesFromTable(final String table){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, null, null, null, null, null )));
 	}
 	
-	private List<CurrencyRate> requestTableRates(final CurrencyExchangeRateQueryParam queryParam) {
-		try {
-			LOGGER.info(this.getClass().getName() + ": executing request for Rates from the specified Table.");
-			NBPRatesFromTableDto[] ratesFromTableDtoArray = client.getTableRates(buildUrl(queryParam, TABLES));
-			List<NBPRatesFromTableDto> ratesFromTableDtoList = Arrays.asList(ratesFromTableDtoArray);
-			List<CurrencyRate> finalListOfCurrencyRates = new ArrayList<>();
-			for(NBPRatesFromTableDto currentRateFromTableDto :ratesFromTableDtoList) {
-				finalListOfCurrencyRates.addAll(mapper.mapToExchangeRatesFromTable(currentRateFromTableDto));
-			}
-			return finalListOfCurrencyRates;
-		} catch (RestClientException e) {
-			LOGGER.error(e.getMessage());
-			return new ArrayList<>();
-		}
+	public List<CurrencyRate> getCurrencyRates(final String table, LocalDate date){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, null, null, date, null, null )));
 	}
 	
-	private List<CurrencyRate> requestCurrencyRates(final CurrencyExchangeRateQueryParam queryParam) {
-		try {
-			LOGGER.info(this.getClass().getName() + ": executing request for Rates for the specified Currency.");
-			NBPRatesFromCurrencyDto ratesFromCurrencyDto = client.getCurrencyRates(buildUrl(queryParam, RATES));
-			return mapper.mapToExchangeRatesFromCurrency(ratesFromCurrencyDto);
-		} catch (RestClientException e) {
-			LOGGER.error(e.getMessage());
-			return new ArrayList<>();
-		}
+	public List<CurrencyRate> getCurrencyRates(final String table, Integer topCount){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, null, topCount, null, null, null )));
 	}
 	
-	private String buildUrl(final CurrencyExchangeRateQueryParam queryParam, String methodConstant) {
-		String url = NBP_API_ENDPOINT + methodConstant + queryParam.getTable() + "/";
-		LOGGER.info(url);
-		if(queryParam.getCode().isPresent() && methodConstant == RATES) {
-			url += queryParam.getCode().get() + "/";
-		}
-		LOGGER.info(url);
-		if(queryParam.getDate().isPresent()) {
-			url += queryParam.getDate().get() + "/";
-		} else if(queryParam.getStartDate().isPresent() && queryParam.getEndDate().isPresent()) {
-			url += queryParam.getStartDate().get() + "/";
-			url += queryParam.getEndDate().get() + "/";
-		} else if(queryParam.getTopCount().isPresent()) {
-			url += "last/" + queryParam.getTopCount().get() + "/";
-		}
-		return url;
+	public List<CurrencyRate> getCurrencyRates(final String table, LocalDate startDate, LocalDate endDate){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, null, null, null, startDate, endDate )));
+	}
+	
+	public List<CurrencyRate> getCurrencyRates(final String table, String code){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, null, null, null, null )));
+	}
+	
+	public List<CurrencyRate> getCurrencyRates(final String table, String code, LocalDate date){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, null, date, null, null )));
+	}
+	
+	public List<CurrencyRate> getCurrencyRates(final String table, String code, Integer topCount){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, topCount, null, null, null )));
+	}
+	
+	public List<CurrencyRate> getCurrencyRates(final String table, String code, LocalDate startDate, LocalDate endDate){
+		return httpResponseMapper.mapToExchangeRatesFromTable(httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, null, null, startDate, endDate)));
 	}
 }
