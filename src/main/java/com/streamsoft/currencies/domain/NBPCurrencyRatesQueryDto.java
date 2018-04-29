@@ -11,12 +11,76 @@ public class NBPCurrencyRatesQueryDto {
 	final LocalDate startDate;
 	final LocalDate endDate;
 	
-	public NBPCurrencyRatesQueryDto(String table, String code, Integer topCount, LocalDate date, LocalDate startDate,
+	public NBPCurrencyRatesQueryDto(String table) {
+		this.table = table;
+		this.code = null;
+		this.topCount = null;
+		this.date = null;
+		this.startDate = null;
+		this.endDate = null;
+	}
+
+	public NBPCurrencyRatesQueryDto(String table, Integer topCount) {
+		this.table = table;
+		this.code = null;
+		this.topCount = topCount;
+		this.date = null;
+		this.startDate = null;
+		this.endDate = null;
+	}
+
+
+	public NBPCurrencyRatesQueryDto(String table, LocalDate date) {
+		this.table = table;
+		this.code = null;
+		this.topCount = null;
+		this.date = date;
+		this.startDate = null;
+		this.endDate = null;
+	}
+
+	public NBPCurrencyRatesQueryDto(String table, LocalDate startDate,
 			LocalDate endDate) {
+		this.table = table;
+		this.code = null;
+		this.topCount = null;
+		this.date = null;
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
+
+	public NBPCurrencyRatesQueryDto(String table, String code) {
+		this.table = table;
+		this.code = code;
+		this.topCount = null;
+		this.date = null;
+		this.startDate = null;
+		this.endDate = null;
+	}
+
+	public NBPCurrencyRatesQueryDto(String table, String code, Integer topCount) {
 		this.table = table;
 		this.code = code;
 		this.topCount = topCount;
+		this.date = null;
+		this.startDate = null;
+		this.endDate = null;
+	}
+	public NBPCurrencyRatesQueryDto(String table, String code, LocalDate date) {
+		this.table = table;
+		this.code = code;
+		this.topCount = null;
 		this.date = date;
+		this.startDate = null;
+		this.endDate = null;
+	}
+
+	public NBPCurrencyRatesQueryDto(String table, String code, LocalDate startDate,
+			LocalDate endDate) {
+		this.table = table;
+		this.code = code;
+		this.topCount = null;
+		this.date = null;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
@@ -44,5 +108,4 @@ public class NBPCurrencyRatesQueryDto {
 	public Optional <LocalDate> getOptionalEndDate() {
 		return Optional.ofNullable(endDate);
 	}
-
 }

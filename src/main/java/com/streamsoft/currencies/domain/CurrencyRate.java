@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "CURRENCY_RATE")
 public class CurrencyRate {
 	private long id;
-	private Rate rate;
+	private RateSession rate;
 	private Currency currency;
 	private BigDecimal mid;
 	private BigDecimal bid;
@@ -24,7 +24,7 @@ public class CurrencyRate {
 	public CurrencyRate() {
 	}
 
-	public CurrencyRate(Rate rate, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
+	public CurrencyRate(RateSession rate, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
 		this.rate = rate;
 		this.currency = currency;
 		this.mid = mid;
@@ -42,7 +42,7 @@ public class CurrencyRate {
 
 	@ManyToOne
 	@JoinColumn(name = "ID_RATE")
-	public Rate getRate() {
+	public RateSession getRate() {
 		return rate;
 	}
 
@@ -71,7 +71,7 @@ public class CurrencyRate {
 		this.id = id;
 	}
 
-	public void setRate(Rate rate) {
+	public void setRate(RateSession rate) {
 		this.rate = rate;
 	}
 
