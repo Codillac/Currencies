@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.streamsoft.currencies.domain.NBPCurrencyRatesQueryDto;
@@ -22,12 +21,12 @@ public class NBPGetCurrencyRatesHttpClient {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public NBPRatesFromCurrencyDto getCurrencyRates(final NBPCurrencyRatesQueryDto query) throws RestClientException {
+	public NBPRatesFromCurrencyDto getCurrencyRates(final NBPCurrencyRatesQueryDto query) {
 		LOGGER.info(this.getClass().getName() + ": requesting GET for CurrencyRates.");
 		return restTemplate.getForObject(buildUrl(query, RATES), NBPRatesFromCurrencyDto.class);
 	}
 
-	public NBPRatesFromTableDto[] getTableRates(final NBPCurrencyRatesQueryDto query) throws RestClientException {
+	public NBPRatesFromTableDto[] getTableRates(final NBPCurrencyRatesQueryDto query) {
 		LOGGER.info(this.getClass().getName() + ": requesting GET for TableRates.");
 		return restTemplate.getForObject(buildUrl(query, TABLES), NBPRatesFromTableDto[].class);
 	}
