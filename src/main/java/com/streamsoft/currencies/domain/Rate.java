@@ -22,17 +22,17 @@ public class Rate {
 	private LocalDate effectiveDate;
 	private LocalDate tradingDate;
 	private List<CurrencyRate> currencyRates;
-	
+
 	public Rate() {
 	}
-	
+
 	public Rate(String number, String table, LocalDate effectiveDate, LocalDate tradingDate) {
 		this.number = number;
 		this.table = table;
 		this.effectiveDate = effectiveDate;
 		this.tradingDate = tradingDate;
 	}
-	
+
 	@Id
 	@NotNull
 	@GeneratedValue
@@ -40,34 +40,29 @@ public class Rate {
 	public long getId() {
 		return id;
 	}
-	
+
 	@NotNull
 	@Column(name = "RATE_NO", unique = true)
 	public String getNumber() {
 		return number;
 	}
-	
+
 	@Column(name = "TABLE_NAME")
 	public String getTable() {
 		return table;
 	}
-	
+
 	@Column(name = "EFF_DATE")
 	public LocalDate getEffectiveDate() {
 		return effectiveDate;
 	}
-	
+
 	@Column(name = "TRADING_DATE")
 	public LocalDate getTradingDate() {
 		return tradingDate;
 	}
 
-	@OneToMany(
-			targetEntity = CurrencyRate.class,
-			mappedBy = "rate",
-			cascade = CascadeType.ALL,
-			fetch = FetchType.LAZY
-	)
+	@OneToMany(targetEntity = CurrencyRate.class, mappedBy = "rate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<CurrencyRate> getCurrencyRates() {
 		return currencyRates;
 	}

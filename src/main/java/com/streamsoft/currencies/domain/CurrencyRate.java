@@ -20,10 +20,10 @@ public class CurrencyRate {
 	private BigDecimal mid;
 	private BigDecimal bid;
 	private BigDecimal ask;
-	
+
 	public CurrencyRate() {
 	}
-	
+
 	public CurrencyRate(Rate rate, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
 		this.rate = rate;
 		this.currency = currency;
@@ -31,7 +31,7 @@ public class CurrencyRate {
 		this.bid = bid;
 		this.ask = ask;
 	}
-	
+
 	@Id
 	@NotNull
 	@GeneratedValue
@@ -39,29 +39,29 @@ public class CurrencyRate {
 	public long getId() {
 		return id;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ID_RATE")
 	public Rate getRate() {
 		return rate;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ID_CURRENCY")
 	public Currency getCurrency() {
 		return currency;
 	}
-	
+
 	@Column(name = "MID")
 	public BigDecimal getMid() {
 		return mid;
 	}
-	
+
 	@Column(name = "BID")
 	public BigDecimal getBid() {
 		return bid;
 	}
-	
+
 	@Column(name = "ASK")
 	public BigDecimal getAsk() {
 		return ask;

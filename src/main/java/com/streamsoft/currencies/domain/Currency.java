@@ -19,7 +19,7 @@ public class Currency {
 	private String name;
 	private String code;
 	private List<CurrencyRate> currencyRates;
-	
+
 	public Currency() {
 	}
 
@@ -47,12 +47,7 @@ public class Currency {
 		return code;
 	}
 
-	@OneToMany (
-			targetEntity = CurrencyRate.class,
-			mappedBy = "currency",
-			cascade = CascadeType.ALL,
-			fetch = FetchType.LAZY
-	)
+	@OneToMany(targetEntity = CurrencyRate.class, mappedBy = "currency", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<CurrencyRate> getCurrencyRates() {
 		return currencyRates;
 	}

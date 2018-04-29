@@ -19,18 +19,34 @@ public class NBPRatesFromTableDto {
 	@JsonProperty("rates")
 	private List<NBPRateFromTableDto> rates;
 	
+	public NBPRatesFromTableDto() {
+	}
+
+	public NBPRatesFromTableDto(String table, String no, LocalDate effectiveDate, LocalDate tradingDate,
+			List<NBPRateFromTableDto> rates) {
+		this.table = table;
+		this.no = no;
+		this.effectiveDate = effectiveDate;
+		this.tradingDate = tradingDate;
+		this.rates = rates;
+	}
+
 	public String getTable() {
 		return table;
 	}
+
 	public String getNo() {
 		return no;
 	}
+
 	public LocalDate getEffectiveDate() {
 		return effectiveDate;
 	}
+
 	public LocalDate getTradingDate() {
 		return tradingDate;
 	}
+
 	public List<NBPRateFromTableDto> getRates() {
 		return rates;
 	}
