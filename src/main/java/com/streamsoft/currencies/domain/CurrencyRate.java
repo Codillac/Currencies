@@ -25,8 +25,8 @@ public class CurrencyRate {
 	public CurrencyRate() {
 	}
 
-	public CurrencyRate(RateSession rate, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
-		this.rateSession = rate;
+	public CurrencyRate(RateSession rateSession, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
+		this.rateSession = rateSession;
 		this.currency = currency;
 		this.mid = mid;
 		this.bid = bid;
