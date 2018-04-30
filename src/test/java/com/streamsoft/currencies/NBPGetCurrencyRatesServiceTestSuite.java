@@ -51,12 +51,12 @@ public class NBPGetCurrencyRatesServiceTestSuite {
 		List<CurrencyRate> results = service.getCurrencyRatesFromTableDate(TABLE_A, TEST_DATE);
 		boolean isDateOfRateCorrect = true;
 		for(CurrencyRate currentRate : results){
-			if(!currentRate.getRate().getEffectiveDate().equals(TEST_DATE)){
+			if(!currentRate.getRateSession().getEffectiveDate().equals(TEST_DATE)){
 				isDateOfRateCorrect = false;
 			}
 		}
 		//Then
-		results.stream().forEach(r -> System.out.println(r.getCurrency().getCode() + ", " + r.getCurrency().getName() + ": " + r.getMid() + " / " + r.getRate().getEffectiveDate()));
+		results.stream().forEach(r -> System.out.println(r.getCurrency().getCode() + ", " + r.getCurrency().getName() + ": " + r.getMid() + " / " + r.getRateSession().getEffectiveDate()));
 		System.out.println();
 		Assert.assertTrue(!results.isEmpty());
 		Assert.assertTrue(isDateOfRateCorrect);
@@ -68,7 +68,7 @@ public class NBPGetCurrencyRatesServiceTestSuite {
 		List<CurrencyRate> results = service.getCurrencyRatesFromTableTopCount(TABLE_A, 3);
 		Set<RateSession> rateSessions = new HashSet<>();
 		for(CurrencyRate currentRate : results){
-			rateSessions.add(currentRate.getRate());
+			rateSessions.add(currentRate.getRateSession());
 		}
 		//Then
 		rateSessions.stream().forEach(rs -> System.out.println(rs.getNumber()));
@@ -82,12 +82,12 @@ public class NBPGetCurrencyRatesServiceTestSuite {
 		List<CurrencyRate> results = service.getCurrencyRatesFromTablePeriod(TABLE_A, TEST_START_DATE, TEST_END_DATE);
 		boolean isDateOfRateCorrect = true;
 		for(CurrencyRate currentRate : results){
-			if(currentRate.getRate().getEffectiveDate().isAfter(TEST_END_DATE) || currentRate.getRate().getEffectiveDate().isBefore(TEST_START_DATE)){
+			if(currentRate.getRateSession().getEffectiveDate().isAfter(TEST_END_DATE) || currentRate.getRateSession().getEffectiveDate().isBefore(TEST_START_DATE)){
 				isDateOfRateCorrect = false;
 			}
 		}
 		//Then
-		results.stream().forEach(r -> System.out.println(r.getCurrency().getCode() + ", " + r.getCurrency().getName() + ": " + r.getMid() + " / " + r.getRate().getEffectiveDate()));
+		results.stream().forEach(r -> System.out.println(r.getCurrency().getCode() + ", " + r.getCurrency().getName() + ": " + r.getMid() + " / " + r.getRateSession().getEffectiveDate()));
 		System.out.println();
 		Assert.assertTrue(!results.isEmpty());
 		Assert.assertTrue(isDateOfRateCorrect);
