@@ -1,6 +1,7 @@
 package com.streamsoft.currencies.domain;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Country {
 	private Long id;
 	private String name;
-	private List<Currency> currencies;
+	private Set<Currency> currencies = new HashSet<>();
 	
 	public Country() {
 	}
@@ -37,7 +38,7 @@ public class Country {
 				joinColumns = {@JoinColumn(name = "ID_COUNTRY", referencedColumnName = "ID_COUNTRY")},
 				inverseJoinColumns = {@JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")}
 	)
-	public List<Currency> getCurrencies() {
+	public Set<Currency> getCurrencies() {
 		return currencies;
 	}
 
@@ -49,7 +50,32 @@ public class Country {
 		this.name = name;
 	}
 
-	public void setCurrencies(List<Currency> currencies) {
+	public void setCurrencies(Set<Currency> currencies) {
 		this.currencies = currencies;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Country other = (Country) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 }

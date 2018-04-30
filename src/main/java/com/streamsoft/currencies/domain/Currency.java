@@ -1,5 +1,6 @@
 package com.streamsoft.currencies.domain;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class Currency {
 	private String name;
 	private String code;
 	private List<CurrencyRate> currencyRates;
-	private Set<Country> countries;
+	private Set<Country> countries = new HashSet<>();
 
 	public Currency() {
 	}
