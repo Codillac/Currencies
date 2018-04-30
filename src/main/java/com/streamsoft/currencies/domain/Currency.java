@@ -47,7 +47,7 @@ public class Currency {
 		return currencyRates;
 	}
 	
-	@ManyToMany(mappedBy = "countries")
+	@ManyToMany(mappedBy = "currencies")
 	public Set<Country> getCountries() {
 		return countries;
 	}
