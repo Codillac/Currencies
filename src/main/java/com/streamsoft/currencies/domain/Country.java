@@ -24,7 +24,7 @@ public class Country {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@NotNull
 	@Column(name = "ID_COUNTRY", unique = true)
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	

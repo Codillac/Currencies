@@ -39,7 +39,7 @@ public class RateSession {
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_RATE_SESSION", unique = true)
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

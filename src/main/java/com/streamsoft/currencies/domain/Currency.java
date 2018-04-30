@@ -28,7 +28,7 @@ public class Currency {
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CURRENCY", unique = true)
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

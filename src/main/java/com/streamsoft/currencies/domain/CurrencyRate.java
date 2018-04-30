@@ -37,7 +37,7 @@ public class CurrencyRate {
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CURRENCY_RATE", unique = true)
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
