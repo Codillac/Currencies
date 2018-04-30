@@ -43,7 +43,7 @@ public class CurrencyRate {
 
 	@ManyToOne
 	@JoinColumn(name = "ID_RATE_SESSION")
-	public RateSession getRate() {
+	public RateSession getRateSession() {
 		return rateSession;
 	}
 
@@ -72,7 +72,7 @@ public class CurrencyRate {
 		this.id = id;
 	}
 
-	public void setRate(RateSession rateSession) {
+	public void setRateSession(RateSession rateSession) {
 		this.rateSession = rateSession;
 	}
 
