@@ -8,15 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "RATE_SESSION")
+@Table(name = "RATE_SESSIONS")
 public class RateSession {
-	private long id;
+	private Long id;
 	private String number;
 	private String table;
 	private LocalDate effectiveDate;
@@ -35,8 +36,8 @@ public class RateSession {
 
 	@Id
 	@NotNull
-	@GeneratedValue
-	@Column(name = "ID", unique = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID_RATE_SESSION", unique = true)
 	public long getId() {
 		return id;
 	}
@@ -62,7 +63,7 @@ public class RateSession {
 		return tradingDate;
 	}
 
-	@OneToMany(targetEntity = CurrencyRate.class, mappedBy = "rate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = CurrencyRate.class, mappedBy = "rateSession", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<CurrencyRate> getCurrencyRates() {
 		return currencyRates;
 	}

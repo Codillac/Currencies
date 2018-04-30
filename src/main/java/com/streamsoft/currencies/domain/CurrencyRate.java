@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,10 +13,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "CURRENCY_RATE")
+@Table(name = "CURRENCY_RATES")
 public class CurrencyRate {
-	private long id;
-	private RateSession rate;
+	private Long id;
+	private RateSession rateSession;
 	private Currency currency;
 	private BigDecimal mid;
 	private BigDecimal bid;
@@ -25,7 +26,7 @@ public class CurrencyRate {
 	}
 
 	public CurrencyRate(RateSession rate, Currency currency, BigDecimal mid, BigDecimal bid, BigDecimal ask) {
-		this.rate = rate;
+		this.rateSession = rate;
 		this.currency = currency;
 		this.mid = mid;
 		this.bid = bid;
@@ -34,16 +35,16 @@ public class CurrencyRate {
 
 	@Id
 	@NotNull
-	@GeneratedValue
-	@Column(name = "ID", unique = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID_CURRENCY_RATE", unique = true)
 	public long getId() {
 		return id;
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "ID_RATE")
+	@JoinColumn(name = "ID_RATE_SESSION")
 	public RateSession getRate() {
-		return rate;
+		return rateSession;
 	}
 
 	@ManyToOne
@@ -71,8 +72,8 @@ public class CurrencyRate {
 		this.id = id;
 	}
 
-	public void setRate(RateSession rate) {
-		this.rate = rate;
+	public void setRate(RateSession rateSession) {
+		this.rateSession = rateSession;
 	}
 
 	public void setCurrency(Currency currency) {

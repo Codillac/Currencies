@@ -1,24 +1,19 @@
 package com.streamsoft.currencies.domain;
 
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "CURRENCY")
+@Table(name = "CURRENCIES")
 public class Currency {
-	private long id;
+	private Long id;
 	private String name;
 	private String code;
 	private List<CurrencyRate> currencyRates;
+	private Set<Country> countries;
 
 	public Currency() {
 	}
@@ -30,8 +25,8 @@ public class Currency {
 
 	@Id
 	@NotNull
-	@GeneratedValue
-	@Column(name = "ID", unique = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID_CURRENCY", unique = true)
 	public long getId() {
 		return id;
 	}
@@ -51,6 +46,11 @@ public class Currency {
 	public List<CurrencyRate> getCurrencyRates() {
 		return currencyRates;
 	}
+	
+	@ManyToMany(mappedBy = "countries")
+	public Set<Country> getCountries() {
+		return countries;
+	}
 
 	public void setId(long id) {
 		this.id = id;
@@ -66,5 +66,9 @@ public class Currency {
 
 	public void setCurrencyRates(List<CurrencyRate> currencyRates) {
 		this.currencyRates = currencyRates;
+	}
+
+	public void setCountries(Set<Country> countries) {
+		this.countries = countries;
 	}
 }
