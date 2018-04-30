@@ -11,13 +11,16 @@ import javax.validation.constraints.NotNull;
 public class Country {
 	private Long id;
 	private String name;
+	private String code;
 	private Set<Currency> currencies = new HashSet<>();
 	
 	public Country() {
 	}
 	
-	public Country(String name) {
+	public Country(String name, String code) {
+		super();
 		this.name = name;
+		this.code = code;
 	}
 
 	@Id
@@ -28,9 +31,14 @@ public class Country {
 		return id;
 	}
 	
-	@Column(name = "COUNTRY_NAME")
+	@Column(name = "COUNTRY_NAME", unique = true)
 	public String getName() {
 		return name;
+	}
+	
+	@Column(name = "COUNTRY_CODE")
+	public String getCode() {
+		return code;
 	}
 
 	@ManyToMany
@@ -49,6 +57,10 @@ public class Country {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public void setCurrencies(Set<Currency> currencies) {
 		this.currencies = currencies;
@@ -58,7 +70,7 @@ public class Country {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
 
@@ -71,10 +83,10 @@ public class Country {
 		if (getClass() != obj.getClass())
 			return false;
 		Country other = (Country) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!code.equals(other.code))
 			return false;
 		return true;
 	}

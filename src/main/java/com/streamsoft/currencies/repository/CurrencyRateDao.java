@@ -9,7 +9,5 @@ import com.streamsoft.currencies.domain.CurrencyRate;
 
 @Transactional
 @Repository
-public interface ExchangeRateRepository extends CrudRepository<CurrencyRate, Integer> {
-	@Override
-	CurrencyRate save(CurrencyRate currencyRate);
+public interface CurrencyRateDao extends CrudRepository<CurrencyRate, Long> {
 }
