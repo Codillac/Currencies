@@ -1,5 +1,6 @@
 package com.streamsoft.currencies.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,7 @@ public class Currency {
 	private Long id;
 	private String name;
 	private String code;
-	private List<CurrencyRate> currencyRates;
+	private List<CurrencyRate> currencyRates = new ArrayList<>();
 	private Set<Country> countries = new HashSet<>();
 
 	public Currency() {
@@ -26,7 +27,7 @@ public class Currency {
 
 	@Id
 	@NotNull
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	@Column(name = "ID_CURRENCY", unique = true)
 	public Long getId() {
 		return id;

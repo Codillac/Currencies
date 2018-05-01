@@ -1,6 +1,5 @@
 package com.streamsoft.currencies;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -38,21 +37,21 @@ public class NBPCurrencyRatesRepositoryTestSuite {
 	NBPGetCurrencyRatesService getCurrenciesService;
 	
 	@Test
-	public void testSaveAllDownloadedCurrencyRates() {
+	public void testSaveSingleCurrencyRateForCurrency() {
 		//Given
 		Country country = new Country("Stany zjednoczone", "USA");
 		List<CurrencyRate> currencyRates = getCurrenciesService.getCurrencyRatesForCurrency("A", "USD");
-		List<RateSession> rateSessions = new ArrayList<>();
-		List<Currency> currencies = new ArrayList<>();
-		for(CurrencyRate tempCurrencyRate : currencyRates) {
-			rateSessions.add(tempCurrencyRate.getRateSession());
-			currencies.add(tempCurrencyRate.getCurrency());
-			country.getCurrencies().add(tempCurrencyRate.getCurrency());
-		}
-		countryDao.save(country);
-		currencyDao.saveAll(currencies);
-		rateSessionDao.saveAll(rateSessions);
 		//When
-		currencyRateDao.saveAll(currencyRates);
+		for(CurrencyRate tempCurrencyRate : currencyRates) {
+			RateSession rateSession = tempCurrencyRate.getRateSession();
+			Currency currency = tempCurrencyRate.getCurrency();
+			rateSession.getCurrencyRates().add(tempCurrencyRate);
+			currency.getCurrencyRates().add(tempCurrencyRate);
+			currencyDao.save(currency);
+			rateSessionDao.save(rateSession);
+//			country.getCurrencies().add(tempCurrencyRate.getCurrency());
+//			countryDao.save(country);
+			currencyRateDao.save(tempCurrencyRate);
+		}
 	}
 }
