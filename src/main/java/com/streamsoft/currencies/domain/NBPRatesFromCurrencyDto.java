@@ -15,6 +15,9 @@ public class NBPRatesFromCurrencyDto {
 	private String code;
 	@JsonProperty("rates")
 	private List<NBPRateFromCurrencyDto> rates;
+	
+	public NBPRatesFromCurrencyDto() {
+	}
 
 	public NBPRatesFromCurrencyDto(String table, String currency, String code, List<NBPRateFromCurrencyDto> rates) {
 		this.table = table;

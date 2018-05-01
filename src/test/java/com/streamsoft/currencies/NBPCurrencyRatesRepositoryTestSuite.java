@@ -49,10 +49,10 @@ public class NBPCurrencyRatesRepositoryTestSuite {
 			currencies.add(tempCurrencyRate.getCurrency());
 			country.getCurrencies().add(tempCurrencyRate.getCurrency());
 		}
+		countryDao.save(country);
 		currencyDao.saveAll(currencies);
 		rateSessionDao.saveAll(rateSessions);
 		//When
-		countryDao.save(country);
 		currencyRateDao.saveAll(currencyRates);
 	}
 }

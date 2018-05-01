@@ -92,4 +92,12 @@ public class NBPGetCurrencyRatesServiceTestSuite {
 		Assert.assertTrue(!results.isEmpty());
 		Assert.assertTrue(isDateOfRateCorrect);
 	}
+	
+	@Test
+	public void testGetCurrencyRatesForCurrency(){
+		//Given&When
+		List<CurrencyRate> results = service.getCurrencyRatesForCurrency(TABLE_A, "USD");
+		//Then
+		results.forEach(r -> System.out.println(r.getCurrency().getName()));
+	}
 }

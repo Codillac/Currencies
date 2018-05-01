@@ -20,6 +20,9 @@ public class NBPRateFromCurrencyDto {
 	private BigDecimal bid;
 	@JsonProperty("ask")
 	private BigDecimal ask;
+	
+	public NBPRateFromCurrencyDto() {
+	}
 
 	public NBPRateFromCurrencyDto(String no, LocalDate effectiveDate, LocalDate tradingDate, BigDecimal mid,
 			BigDecimal bid, BigDecimal ask) {

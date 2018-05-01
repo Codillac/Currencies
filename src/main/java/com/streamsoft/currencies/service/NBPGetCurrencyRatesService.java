@@ -40,23 +40,23 @@ public class NBPGetCurrencyRatesService {
 	}
 
 	public List<CurrencyRate> getCurrencyRatesForCurrency(final String table, final String code) {
-		return httpResponseMapper.mapToExchangeRatesFromTable(
-				httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code)));
+		return httpResponseMapper.mapToExchangeRatesFromCurrency(
+				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code)));
 	}
 
 	public List<CurrencyRate> getCurrencyRatesForCurrencyDate(final String table, final String code, final LocalDate date) {
-		return httpResponseMapper.mapToExchangeRatesFromTable(
-				httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, date)));
+		return httpResponseMapper.mapToExchangeRatesFromCurrency(
+				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code, date)));
 	}
 
 	public List<CurrencyRate> getCurrencyRatesForCurrencyTopCount(final String table, final String code, final Integer topCount) {
-		return httpResponseMapper.mapToExchangeRatesFromTable(
-				httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, topCount)));
+		return httpResponseMapper.mapToExchangeRatesFromCurrency(
+				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code, topCount)));
 	}
 
 	public List<CurrencyRate> getCurrencyRatesForCurrencyPeriod(final String table, final String code, final LocalDate startDate,
 			LocalDate endDate) {
-		return httpResponseMapper.mapToExchangeRatesFromTable(
-				httpClient.getTableRates(new NBPCurrencyRatesQueryDto(table, code, startDate, endDate)));
+		return httpResponseMapper.mapToExchangeRatesFromCurrency(
+				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code, startDate, endDate)));
 	}
 }
