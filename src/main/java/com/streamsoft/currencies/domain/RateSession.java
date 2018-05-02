@@ -9,8 +9,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -36,14 +38,15 @@ public class RateSession {
 
 	@Id
 	@NotNull
-	@GeneratedValue
+	@SequenceGenerator(name = "RATE_SESSIONS_SEQ", sequenceName = "RATE_SESSIONS_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="RATE_SESSIONS_SEQ")
 	@Column(name = "ID_RATE_SESSION", unique = true)
 	public Long getId() {
 		return id;
 	}
 
 	@NotNull
-	@Column(name = "RATE_NO", unique = true)
+	@Column(name = "RATE_NO", unique = true, length = 31)
 	public String getNumber() {
 		return number;
 	}

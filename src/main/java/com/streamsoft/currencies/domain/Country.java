@@ -24,7 +24,8 @@ public class Country {
 	}
 
 	@Id
-	@GeneratedValue
+	@SequenceGenerator(name = "COUNTRIES_SEQ", sequenceName = "COUNTRIES_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="COUNTRIES_SEQ")
 	@NotNull
 	@Column(name = "ID_COUNTRY", unique = true)
 	public Long getId() {

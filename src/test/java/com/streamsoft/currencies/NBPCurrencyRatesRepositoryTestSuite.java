@@ -37,21 +37,68 @@ public class NBPCurrencyRatesRepositoryTestSuite {
 	NBPGetCurrencyRatesService getCurrenciesService;
 	
 	@Test
-	public void testSaveSingleCurrencyRateForCurrency() {
+	public void testSaveCurrencyRatesForCurrencyFromSeveralRateSessions() {
 		//Given
-		Country country = new Country("Stany zjednoczone", "USA");
-		List<CurrencyRate> currencyRates = getCurrenciesService.getCurrencyRatesForCurrency("A", "USD");
+		Country country1 = new Country("Stany zjednoczone", "USA");
+		Country country2 = new Country("Republika chinska", "ROC");
+		Currency currency1 = new Currency("Dolar amerykański", "USD");
+		country1.getCurrencies().add(currency1);
+		currency1.getCountries().add(country1);
+		currencyDao.save(currency1);
+		countryDao.save(country1);
+		List<CurrencyRate> currencyRates = getCurrenciesService.getCurrencyRatesForCurrencyTopCount("A", "USD", 10);
 		//When
+		
 		for(CurrencyRate tempCurrencyRate : currencyRates) {
 			RateSession rateSession = tempCurrencyRate.getRateSession();
+			if(!rateSessionDao.findByNumber(rateSession.getNumber()).isPresent()) {
+				rateSessionDao.save(rateSession);
+			} else {
+				tempCurrencyRate.setRateSession(rateSessionDao.findByNumber(rateSession.getNumber()).get());
+				rateSessionDao.save(tempCurrencyRate.getRateSession());
+			}
 			Currency currency = tempCurrencyRate.getCurrency();
-			rateSession.getCurrencyRates().add(tempCurrencyRate);
-			currency.getCurrencyRates().add(tempCurrencyRate);
-			currencyDao.save(currency);
-			rateSessionDao.save(rateSession);
-//			country.getCurrencies().add(tempCurrencyRate.getCurrency());
-//			countryDao.save(country);
-			currencyRateDao.save(tempCurrencyRate);
+			if(!currencyDao.findByCode(currency.getCode()).isPresent()) {
+				currencyDao.save(currency);
+			} else {
+				tempCurrencyRate.setCurrency(currencyDao.findByCode(currency.getCode()).get());
+				currencyDao.save(tempCurrencyRate.getCurrency());
+			}
+			if(!currencyRateDao.findByRateSessionAndCurrency(tempCurrencyRate.getRateSession(), tempCurrencyRate.getCurrency()).isPresent()) {
+				currencyRateDao.save(tempCurrencyRate);
+			}
+		}
+	}
+	
+	@Test
+	public void testSaveCurrencyRatesFromTableFromSeveralRateSessions() {
+		//Given
+//		Country country1 = new Country("Stany zjednoczone", "USA");
+//		Country country2 = new Country("Republika chinska", "ROC");
+//		Currency currency1 = new Currency("Dolar amerykanski", "USD");
+//		country1.getCurrencies().add(currency1);
+//		currency1.getCountries().add(country1);
+//		countryDao.save(country1);
+//		currencyDao.save(currency1);
+		List<CurrencyRate> currencyRates = getCurrenciesService.getCurrencyRatesFromTableTopCount("A", 10);
+		//When
+		
+		for(CurrencyRate tempCurrencyRate : currencyRates) {
+			RateSession rateSession = tempCurrencyRate.getRateSession();
+			if(!rateSessionDao.findByNumber(rateSession.getNumber()).isPresent()) {
+				rateSessionDao.save(rateSession);
+			} else {
+				tempCurrencyRate.setRateSession(rateSessionDao.findByNumber(rateSession.getNumber()).get());
+			}
+			Currency currency = tempCurrencyRate.getCurrency();
+			if(!currencyDao.findByCode(currency.getCode()).isPresent()) {
+				currencyDao.save(currency);
+			} else {
+				tempCurrencyRate.setCurrency(currencyDao.findByCode(currency.getCode()).get());
+			}
+			if(!currencyRateDao.findByRateSessionAndCurrency(tempCurrencyRate.getRateSession(), tempCurrencyRate.getCurrency()).isPresent()) {
+				currencyRateDao.save(tempCurrencyRate);
+			}
 		}
 	}
 }
