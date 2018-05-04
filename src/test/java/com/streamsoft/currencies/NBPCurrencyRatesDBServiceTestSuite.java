@@ -14,13 +14,33 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.streamsoft.currencies.domain.Country;
 import com.streamsoft.currencies.domain.CurrencyRate;
+import com.streamsoft.currencies.repository.CurrencyRateDao;
 import com.streamsoft.currencies.service.NBPCurrencyRatesDBService;
+import com.streamsoft.currencies.service.NBPGetCurrencyRatesService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class NBPCurrencyRatesDBServiceTestSuite {
 	@Autowired
 	NBPCurrencyRatesDBService service;
+	
+	@Autowired
+	NBPGetCurrencyRatesService getCurrencyRatesFromNBPService;
+	
+	@Autowired
+	CurrencyRateDao currencyRateDao;
+	
+	@Test
+	public void testSaveCurrencyRatesToDB() {
+		//Given
+		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTableTopCount("A", 67);
+		//When
+		for(CurrencyRate tempCurrencyRate : currencyRates) {
+			service.saveCurrencyRateToDb(tempCurrencyRate);
+		}
+		//Then
+		Assert.assertEquals(currencyRateDao.count(), 2345);
+	}
 	
 	@Test
 	public void testgetCurrencyRateFromDbByDateAndCurrencyCode(){
