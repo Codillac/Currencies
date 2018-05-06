@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.streamsoft.currencies.domain.Country;
+import com.streamsoft.currencies.domain.Currency;
 import com.streamsoft.currencies.domain.CurrencyRate;
 import com.streamsoft.currencies.repository.CurrencyRateDao;
 import com.streamsoft.currencies.service.NBPCurrencyRatesDBService;
@@ -53,25 +54,25 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindMinimumCurrencyRateValueInPeriod(){
+	public void testFindMinimumCurrencyMidRateValueInPeriod(){
 		//Given
 		String currencyCode = "USD";
 		LocalDate from = LocalDate.of(2018, 4, 20);
 		LocalDate to = LocalDate.of(2018, 4, 25);
 		//When
-		BigDecimal result = service.findMinimumCurrencyRateValueInPeriod(currencyCode, from, to);
+		BigDecimal result = service.findMinimumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 		//Then
 		Assert.assertEquals(BigDecimal.valueOf(3.39), result);
 	}
 	
 	@Test
-	public void testFindMaximumCurrencyRateValueInPeriod(){
+	public void testFindMaximumCurrencyMidRateValueInPeriod(){
 		//Given
 		String currencyCode = "USD";
 		LocalDate from = LocalDate.of(2018, 4, 20);
 		LocalDate to = LocalDate.of(2018, 4, 25);
 		//When
-		BigDecimal result = service.findMaximumCurrencyRateValueInPeriod(currencyCode, from, to);
+		BigDecimal result = service.findMaximumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 		//Then
 		Assert.assertEquals(BigDecimal.valueOf(3.45), result);
 	}
@@ -104,5 +105,28 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		List<Country> resultCountries = service.findCountriesWithAtLeastTwoCurrencies();
 		//Then
 		Assert.assertEquals(7, resultCountries.size());
+	}
+	
+	@Test
+	public void testFindCurrenciesWithMinimumRateDifferenceInPeriod(){
+		//Given
+		LocalDate from = LocalDate.of(2018, 4, 20);
+		LocalDate to = LocalDate.of(2018, 4, 25);
+		//When
+		List<Currency> resultCurrencies = service.findCurrenciesWithMinimumRateDifferenceInPeriod(from, to);
+		//Then
+		Assert.assertEquals(14, resultCurrencies.size());
+	}
+	
+	@Test
+	public void testFindCurrenciesWithMaximumRateDifferenceInPeriod(){
+		//Given
+		LocalDate from = LocalDate.of(2018, 4, 20);
+		LocalDate to = LocalDate.of(2018, 4, 25);
+		//When
+		List<Currency> resultCurrencies = service.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
+		//Then
+		Assert.assertEquals(1, resultCurrencies.size());
+		Assert.assertEquals("XDR", resultCurrencies.get(0).getCode());
 	}
 }

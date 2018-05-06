@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.streamsoft.currencies.domain.Country;
+import com.streamsoft.currencies.domain.Currency;
 import com.streamsoft.currencies.domain.CurrencyRate;
 import com.streamsoft.currencies.domain.RateSession;
 import com.streamsoft.currencies.repository.CountryDao;
@@ -40,12 +41,14 @@ public class NBPCurrencyRatesDBService {
 	}
 	
 	public void saveCurrencyRateToDb(CurrencyRate currencyRate){
-		if(rateSessionDao.findByNumber(currencyRate.getRateSession().getNumber()).isPresent()) {
-			currencyRate.setRateSession(rateSessionDao.findByNumber(currencyRate.getRateSession().getNumber()).get());
+		Optional<RateSession> rateSession = rateSessionDao.findByNumber(currencyRate.getRateSession().getNumber());
+		if(rateSession.isPresent()) {
+			currencyRate.setRateSession(rateSession.get());
 		}	
 		rateSessionDao.save(currencyRate.getRateSession());
-		if(currencyDao.findByCode(currencyRate.getCurrency().getCode()).isPresent()) {
-			currencyRate.setCurrency(currencyDao.findByCode(currencyRate.getCurrency().getCode()).get());
+		Optional<Currency> currency = currencyDao.findByCode(currencyRate.getCurrency().getCode());
+		if(currency.isPresent()) {
+			currencyRate.setCurrency(currency.get());
 		}
 		currencyDao.save(currencyRate.getCurrency());
 		Optional<CurrencyRate> existingCurrencyRate = currencyRateDao.findByRateSessionAndCurrency(currencyRate.getRateSession(), currencyRate.getCurrency());
@@ -59,12 +62,12 @@ public class NBPCurrencyRatesDBService {
 		currencyRateDao.delete(currencyRate);
 	}
 	
-	public BigDecimal findMinimumCurrencyRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
-		return currencyRateDao.findMinimumCurrencyRateValueInPeriod(currencyCode, from, to);
+	public BigDecimal findMinimumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
+		return currencyRateDao.findMinimumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 	}
 	
-	public BigDecimal findMaximumCurrencyRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
-		return currencyRateDao.findMaximumCurrencyRateValueInPeriod(currencyCode, from, to);
+	public BigDecimal findMaximumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
+		return currencyRateDao.findMaximumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 	}
 	
 	public List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
@@ -77,5 +80,13 @@ public class NBPCurrencyRatesDBService {
 	
 	public List<Country> findCountriesWithAtLeastTwoCurrencies(){
 		return countryDao.findCountriesWithAtLeastTwoCurrencies();
+	}
+	
+	public List<Currency> findCurrenciesWithMinimumRateDifferenceInPeriod(LocalDate from, LocalDate to){
+		return currencyDao.findCurrenciesWithMinimumRateDifferenceInPeriod(from, to);
+	}
+	
+	public List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(LocalDate from, LocalDate to){
+		return currencyDao.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
 	}
 }
