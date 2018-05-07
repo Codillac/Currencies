@@ -40,7 +40,7 @@ public class Currency {
 	}
 
 	@NotNull
-	@Column(name = "CURRENCY_CODE", unique = true, length = 10)
+	@Column(name = "CURRENCY_CODE", unique = true, length = 5)
 	public String getCode() {
 		return code;
 	}

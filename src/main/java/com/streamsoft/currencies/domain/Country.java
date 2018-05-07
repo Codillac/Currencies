@@ -18,7 +18,6 @@ public class Country {
 	}
 	
 	public Country(String name, String code) {
-		super();
 		this.name = name;
 		this.code = code;
 	}
@@ -37,7 +36,7 @@ public class Country {
 		return name;
 	}
 	
-	@Column(name = "COUNTRY_CODE")
+	@Column(name = "COUNTRY_CODE", unique = true, length = 5)
 	public String getCode() {
 		return code;
 	}

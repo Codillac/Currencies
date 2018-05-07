@@ -19,7 +19,6 @@ import com.streamsoft.currencies.domain.Country;
 import com.streamsoft.currencies.domain.Currency;
 import com.streamsoft.currencies.domain.CurrencyRate;
 import com.streamsoft.currencies.repository.CountryDao;
-import com.streamsoft.currencies.repository.CurrencyDao;
 import com.streamsoft.currencies.repository.CurrencyRateDao;
 import com.streamsoft.currencies.service.NBPCurrencyRatesDBService;
 import com.streamsoft.currencies.service.NBPGetCurrencyRatesService;
@@ -27,6 +26,9 @@ import com.streamsoft.currencies.service.NBPGetCurrencyRatesService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class NBPCurrencyRatesDBServiceTestSuite {
+	private static final int RATE_SESSIONS_TOPCOUNT = 67;
+	private static final int CURRENCY_RATES_TOPCOUNT = 2345;
+	
 	@Autowired
 	NBPCurrencyRatesDBService service;
 	
@@ -39,19 +41,16 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	@Autowired
 	CountryDao countryDao;
 	
-	@Autowired
-	CurrencyDao currencyDao;
-	
 	@Test
 	public void testSaveCurrencyRatesToDB() {
 		//Given
-		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTableTopCount("A", 67);
+		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTableTopCount("A", RATE_SESSIONS_TOPCOUNT);
 		//When
 		for(CurrencyRate tempCurrencyRate : currencyRates) {
-			service.saveCurrencyRateToDb(tempCurrencyRate);
+			service.saveOrUpdateCurrencyRateToDb(tempCurrencyRate);
 		}
 		//Then
-		Assert.assertEquals(currencyRateDao.count(), 2345);
+		Assert.assertEquals(CURRENCY_RATES_TOPCOUNT, currencyRateDao.count());
 	}
 	
 	@Test
@@ -117,16 +116,11 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
 		//When
 		for(Currency tempCurrency : currencies) {
-			Optional<Currency> existingCurrency = currencyDao.findByCode(tempCurrency.getCode());
-			if(existingCurrency.isPresent()){
-				tempCurrency.setId(existingCurrency.get().getId());
-			}
-			currencyDao.save(tempCurrency);
+			service.saveOrUpdateCurrencyToDb(tempCurrency);
 		}
-		for(Country tempCountry : countries){
-			countryDao.save(tempCountry);
+		for(Country tempCountry : countries) {
+			service.saveOrUpdateCountryToDb(tempCountry);
 		}
-		//Then
 		Assert.assertEquals(10, countryDao.count());
 	}
 	

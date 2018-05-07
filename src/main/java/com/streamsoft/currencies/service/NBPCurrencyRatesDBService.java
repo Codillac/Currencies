@@ -40,22 +40,25 @@ public class NBPCurrencyRatesDBService {
 		return currencyRateDao.findByRateSessionAndCurrencyCode(rateSession, currencyCode);
 	}
 	
-	public void saveCurrencyRateToDb(CurrencyRate currencyRate){
+	public void saveOrUpdateCurrencyRateToDb(CurrencyRate currencyRate){
 		Optional<RateSession> rateSession = rateSessionDao.findByNumber(currencyRate.getRateSession().getNumber());
 		if(rateSession.isPresent()) {
 			currencyRate.setRateSession(rateSession.get());
-		}	
-		rateSessionDao.save(currencyRate.getRateSession());
+		} else {
+			rateSessionDao.save(currencyRate.getRateSession());
+		}
 		Optional<Currency> currency = currencyDao.findByCode(currencyRate.getCurrency().getCode());
 		if(currency.isPresent()) {
 			currencyRate.setCurrency(currency.get());
+		} else {
+			currencyDao.save(currencyRate.getCurrency());
 		}
-		currencyDao.save(currencyRate.getCurrency());
 		Optional<CurrencyRate> existingCurrencyRate = currencyRateDao.findByRateSessionAndCurrency(currencyRate.getRateSession(), currencyRate.getCurrency());
 		if(existingCurrencyRate.isPresent()) {
 			currencyRate.setId(existingCurrencyRate.get().getId());
+		} else {
+			currencyRateDao.save(currencyRate);
 		}
-		currencyRateDao.save(currencyRate);
 	}
 	
 	public void deleteCurrencyRateFromDb(CurrencyRate currencyRate){
@@ -88,5 +91,23 @@ public class NBPCurrencyRatesDBService {
 	
 	public List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(LocalDate from, LocalDate to){
 		return currencyDao.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
+	}
+	
+	public void saveOrUpdateCountryToDb(Country country){
+		Optional<Country> existingCountry = countryDao.findByCode(country.getCode());
+		if(existingCountry.isPresent()){
+			country.setId(existingCountry.get().getId());
+		} else {
+			countryDao.save(country);
+		}
+	}
+	
+	public void saveOrUpdateCurrencyToDb(Currency currency) {
+		Optional<Currency> existingCurrency = currencyDao.findByCode(currency.getCode());
+		if(existingCurrency.isPresent()) {
+			currency.setId(existingCurrency.get().getId());
+		} else {
+			currencyDao.save(currency);
+		}
 	}
 }
