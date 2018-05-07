@@ -26,23 +26,23 @@ public interface CurrencyRateDao extends CrudRepository<CurrencyRate, Long> {
 	@Override
 	Optional<CurrencyRate> findById(Long id);
 	
-	@Query(value = "select min(mid) from currency_rates "
-			+ "join currencies on (currencies.id_currency = currency_rates.id_currency) "
-			+ "join rate_sessions on (rate_sessions.id_rate_session = currency_rates.id_rate_session) "
-			+ "where currencies.currency_code = :currencyCode and rate_sessions.eff_date between :from and :to", nativeQuery=true)
+	@Query("select min(crrt.mid) from CurrencyRate crrt "
+			+ "inner join crrt.currency cr "
+			+ "inner join crrt.rateSession rs "
+			+ "where cr.code = :currencyCode and rs.effectiveDate between :from and :to")
 	BigDecimal findMinimumCurrencyMidRateValueInPeriod(@Param("currencyCode")String currencyCode, @Param("from") LocalDate from, @Param("to") LocalDate to);
 	
-	@Query(value = "select max(mid) from currency_rates "
-			+ "join currencies on (currencies.id_currency = currency_rates.id_currency) "
-			+ "join rate_sessions on (rate_sessions.id_rate_session = currency_rates.id_rate_session) "
-			+ "where currencies.currency_code = :currencyCode and rate_sessions.eff_date between :from and :to", nativeQuery=true)
+	@Query("select max(crrt.mid) from CurrencyRate crrt "
+			+ "inner join crrt.currency cr "
+			+ "inner join crrt.rateSession rs "
+			+ "where cr.code = :currencyCode and rs.effectiveDate between :from and :to")
 	BigDecimal findMaximumCurrencyMidRateValueInPeriod(@Param("currencyCode")String currencyCode, @Param("from") LocalDate from, @Param("to") LocalDate to);
 		
-	@Query(value = "select * from currency_rates "
-			+ "join currencies on (currencies.id_currency = currency_rates.id_currency) "
-			+ "join rate_sessions on (rate_sessions.id_rate_session = currency_rates.id_rate_session) "
-			+ "where currency_code = :currencyCode order by mid asc limit :topCount", nativeQuery=true)
-	List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode, @Param("topCount") int topCount);
+	@Query(value = "from CurrencyRate crrt "
+			+ "inner join crrt.currency cr "
+			+ "inner join crrt.rateSession rs "
+			+ "where cr.code = :currencyCode order by crrt.mid asc")
+	List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode);
 		
 	@Query(value = "select * from currency_rates "
 			+ "join currencies on (currencies.id_currency = currency_rates.id_currency) "

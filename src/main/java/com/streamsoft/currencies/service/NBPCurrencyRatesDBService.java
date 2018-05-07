@@ -74,7 +74,7 @@ public class NBPCurrencyRatesDBService {
 	}
 	
 	public List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
-		return currencyRateDao.findTopLowestCurrencyRatesForTheCurrency(currencyCode, topCount);
+		return currencyRateDao.findTopLowestCurrencyRatesForTheCurrency(currencyCode);
 	}
 	
 	public List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
