@@ -19,6 +19,7 @@ import com.streamsoft.currencies.domain.Country;
 import com.streamsoft.currencies.domain.Currency;
 import com.streamsoft.currencies.domain.CurrencyRate;
 import com.streamsoft.currencies.repository.CountryDao;
+import com.streamsoft.currencies.repository.CurrencyDao;
 import com.streamsoft.currencies.repository.CurrencyRateDao;
 import com.streamsoft.currencies.service.NBPCurrencyRatesDBService;
 import com.streamsoft.currencies.service.NBPGetCurrencyRatesService;
@@ -37,6 +38,9 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	
 	@Autowired
 	CountryDao countryDao;
+	
+	@Autowired
+	CurrencyDao currencyDao;
 	
 	@Test
 	public void testSaveCurrencyRatesToDB() {
@@ -111,7 +115,11 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		List<Country> countries = prepareTestCountries();
 		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
 		for(Currency tempCurrency : currencies) {
-			//
+			Optional<Currency> existingCurrency = currencyDao.findByCode(tempCurrency.getCode());
+			if(existingCurrency.isPresent()){
+				tempCurrency.setId(existingCurrency.get().getId());
+			}
+			currencyDao.save(tempCurrency);
 		}
 		for(Country tempCountry : countries){
 			countryDao.save(tempCountry);
