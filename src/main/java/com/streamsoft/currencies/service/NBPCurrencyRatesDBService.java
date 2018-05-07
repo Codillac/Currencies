@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.streamsoft.currencies.domain.Country;
@@ -74,11 +76,13 @@ public class NBPCurrencyRatesDBService {
 	}
 	
 	public List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
-		return currencyRateDao.findTopLowestCurrencyRatesForTheCurrency(currencyCode);
+		Pageable queryLimit = PageRequest.of(0, topCount);
+		return currencyRateDao.findTopLowestCurrencyRatesForTheCurrency(currencyCode, queryLimit);
 	}
 	
 	public List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
-		return currencyRateDao.findTopHighestCurrencyRatesForTheCurrency(currencyCode, topCount);
+		Pageable queryLimit = PageRequest.of(0, topCount);
+		return currencyRateDao.findTopHighestCurrencyRatesForTheCurrency(currencyCode, queryLimit);
 	}
 	
 	public List<Country> findCountriesWithAtLeastTwoCurrencies(){

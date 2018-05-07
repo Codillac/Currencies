@@ -110,23 +110,10 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testSaveCountriesToDB(){
-		//Given
-		List<Country> countries = prepareTestCountries();
-		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
-		//When
-		for(Currency tempCurrency : currencies) {
-			service.saveOrUpdateCurrencyToDb(tempCurrency);
-		}
-		for(Country tempCountry : countries) {
-			service.saveOrUpdateCountryToDb(tempCountry);
-		}
-		Assert.assertEquals(10, countryDao.count());
-	}
-	
-	@Test
 	public void testFindCountriesWithAtLeastTwoCurrencies(){
-		//Given&When
+		//Given
+		saveCountriesToDB();
+		//When
 		List<Country> resultCountries = service.findCountriesWithAtLeastTwoCurrencies();
 		//Then
 		Assert.assertEquals(7, resultCountries.size());
@@ -153,6 +140,17 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		//Then
 		Assert.assertEquals(1, resultCurrencies.size());
 		Assert.assertEquals("XDR", resultCurrencies.get(0).getCode());
+	}
+	
+	private void saveCountriesToDB(){
+		List<Country> countries = prepareTestCountries();
+		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
+		for(Currency tempCurrency : currencies) {
+			service.saveOrUpdateCurrencyToDb(tempCurrency);
+		}
+		for(Country tempCountry : countries) {
+			service.saveOrUpdateCountryToDb(tempCountry);
+		}
 	}
 	
 	private List<Country> prepareTestCountries(){

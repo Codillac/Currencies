@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -38,15 +39,13 @@ public interface CurrencyRateDao extends CrudRepository<CurrencyRate, Long> {
 			+ "where cr.code = :currencyCode and rs.effectiveDate between :from and :to")
 	BigDecimal findMaximumCurrencyMidRateValueInPeriod(@Param("currencyCode")String currencyCode, @Param("from") LocalDate from, @Param("to") LocalDate to);
 		
-	@Query(value = "from CurrencyRate crrt "
+	@Query(value = "select crrt from CurrencyRate crrt "
 			+ "inner join crrt.currency cr "
-			+ "inner join crrt.rateSession rs "
 			+ "where cr.code = :currencyCode order by crrt.mid asc")
-	List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode);
+	List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode, Pageable pageable);
 		
-	@Query(value = "select * from currency_rates "
-			+ "join currencies on (currencies.id_currency = currency_rates.id_currency) "
-			+ "join rate_sessions on (rate_sessions.id_rate_session = currency_rates.id_rate_session) "
-			+ "where currency_code = :currencyCode order by mid desc limit :topCount", nativeQuery=true)
-	List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode, @Param("topCount") int topCount);
+	@Query("select crrt from CurrencyRate crrt "
+			+ "join crrt.currency cr "
+			+ "where cr.code = :currencyCode order by crrt.mid desc")
+	List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode, Pageable pageable);
 }
