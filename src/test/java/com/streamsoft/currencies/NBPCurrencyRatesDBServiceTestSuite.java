@@ -112,8 +112,10 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	
 	@Test
 	public void testSaveCountriesToDB(){
+		//Given
 		List<Country> countries = prepareTestCountries();
 		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
+		//When
 		for(Currency tempCurrency : currencies) {
 			Optional<Currency> existingCurrency = currencyDao.findByCode(tempCurrency.getCode());
 			if(existingCurrency.isPresent()){
@@ -124,6 +126,8 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		for(Country tempCountry : countries){
 			countryDao.save(tempCountry);
 		}
+		//Then
+		Assert.assertEquals(10, countryDao.count());
 	}
 	
 	@Test
