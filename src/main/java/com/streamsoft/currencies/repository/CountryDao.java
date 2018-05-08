@@ -16,6 +16,9 @@ import com.streamsoft.currencies.domain.Country;
 public interface CountryDao extends CrudRepository<Country, Long> {
 	Optional<Country> findByCode(String code);
 	
-	@Query(value = "select * from countries join join_currency_country on (countries.id_country = join_currency_country.id_country) join currencies on (join_currency_country.id_currency = currencies.id_currency) group by country_name having count(*) >= 2", nativeQuery=true)
+	@Query("select cntr from Country cntr "
+			+ "join cntr.currencies cr "
+			+ "group by cntr.code "
+			+ "having count(*) >= 2")
 	List<Country> findCountriesWithAtLeastTwoCurrencies();
 }

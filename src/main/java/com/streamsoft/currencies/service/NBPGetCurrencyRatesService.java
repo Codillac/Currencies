@@ -44,9 +44,10 @@ public class NBPGetCurrencyRatesService {
 				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code)));
 	}
 
-	public List<CurrencyRate> getCurrencyRatesForCurrencyDate(final String table, final String code, final LocalDate date) {
-		return httpResponseMapper.mapToExchangeRatesFromCurrency(
+	public CurrencyRate getCurrencyRatesForCurrencyDate(final String table, final String code, final LocalDate date) {
+		List<CurrencyRate> shouldContainOneElementList = httpResponseMapper.mapToExchangeRatesFromCurrency(
 				httpClient.getCurrencyRates(new NBPCurrencyRatesQueryDto(table, code, date)));
+		return shouldContainOneElementList.get(0);
 	}
 
 	public List<CurrencyRate> getCurrencyRatesForCurrencyTopCount(final String table, final String code, final Integer topCount) {

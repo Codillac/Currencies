@@ -27,7 +27,15 @@ import com.streamsoft.currencies.service.NBPGetCurrencyRatesService;
 @SpringBootTest
 public class NBPCurrencyRatesDBServiceTestSuite {
 	private static final int RATE_SESSIONS_TOPCOUNT = 67;
-	private static final int CURRENCY_RATES_TOPCOUNT = 2345;
+	private static final int NO_OF_CURRENCIES_IN_TEST_TABLE = 35;
+	private static final int EXPECTED_CURRENCY_RATES_TOPCOUNT = RATE_SESSIONS_TOPCOUNT * NO_OF_CURRENCIES_IN_TEST_TABLE;
+	private static final LocalDate TEST_FROM_DATE = LocalDate.of(2018, 4, 20);
+	private static final LocalDate TEST_TO_DATE = LocalDate.of(2018, 4, 25);
+	private static final LocalDate TTEST_DATE = LocalDate.of(2018, 4, 25);
+	private static final String CURRENCY_CODE = "USD";
+	private static final String TABLE = "A";
+	private static final int DECIMAL_SCALE_OF_CURRENCY_RATE = CurrencyRate.getScaleOfCurrencyRate();
+	private static final int TOP_MIN_OR_MAX_VALUES = 5;
 	
 	@Autowired
 	NBPCurrencyRatesDBService service;
@@ -44,102 +52,91 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	@Test
 	public void testSaveCurrencyRatesToDB() {
 		//Given
-		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTableTopCount("A", RATE_SESSIONS_TOPCOUNT);
+		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTableTopCount(TABLE, RATE_SESSIONS_TOPCOUNT);
 		//When
 		for(CurrencyRate tempCurrencyRate : currencyRates) {
 			service.saveOrUpdateCurrencyRateToDb(tempCurrencyRate);
 		}
 		//Then
-		Assert.assertEquals(CURRENCY_RATES_TOPCOUNT, currencyRateDao.count());
+		Assert.assertEquals(EXPECTED_CURRENCY_RATES_TOPCOUNT, currencyRateDao.count());
 	}
 	
 	@Test
-	public void testgetCurrencyRateFromDbByDateAndCurrencyCode(){
+	public void testGetCurrencyRateFromDbByDateAndCurrencyCode(){
 		//Given
-		LocalDate dateOfRequestedCurrencyRate = LocalDate.of(2018, 4, 25);
-		String codeOfRequestedCurrencyRate = "USD";
+		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.454800).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
-		Optional<CurrencyRate> searchResult = service.getCurrencyRateFromDbByDateAndCurrencyCode(dateOfRequestedCurrencyRate, codeOfRequestedCurrencyRate);
-		Assert.assertEquals(BigDecimal.valueOf(3.45), searchResult.get().getMid());
+		Optional<CurrencyRate> searchResult = service.getCurrencyRateFromDbByDateAndCurrencyCode(TTEST_DATE, CURRENCY_CODE);
+		Assert.assertEquals(existingCurrencyRate, searchResult.get().getMid());
 	}
 	
 	@Test
 	public void testFindMinimumCurrencyMidRateValueInPeriod(){
 		//Given
-		String currencyCode = "USD";
-		LocalDate from = LocalDate.of(2018, 4, 20);
-		LocalDate to = LocalDate.of(2018, 4, 25);
+		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.388100).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
-		BigDecimal result = service.findMinimumCurrencyMidRateValueInPeriod(currencyCode, from, to);
+		BigDecimal result = service.findMinimumCurrencyMidRateValueInPeriod(CURRENCY_CODE, TEST_FROM_DATE, TEST_TO_DATE);
 		//Then
-		Assert.assertEquals(BigDecimal.valueOf(3.39), result);
+		Assert.assertEquals(existingCurrencyRate, result);
 	}
 	
 	@Test
 	public void testFindMaximumCurrencyMidRateValueInPeriod(){
 		//Given
-		String currencyCode = "USD";
-		LocalDate from = LocalDate.of(2018, 4, 20);
-		LocalDate to = LocalDate.of(2018, 4, 25);
+		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.454800).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
-		BigDecimal result = service.findMaximumCurrencyMidRateValueInPeriod(currencyCode, from, to);
+		BigDecimal result = service.findMaximumCurrencyMidRateValueInPeriod(CURRENCY_CODE, TEST_FROM_DATE, TEST_TO_DATE);
 		//Then
-		Assert.assertEquals(BigDecimal.valueOf(3.45), result);
+		Assert.assertEquals(existingCurrencyRate, result);
 	}
 	
 	@Test
 	public void testFindTopLowestCurrencyRatesForTheCurrency(){
-		//Given
-		String currencyCode = "USD";
-		int topCount = 5;
-		//When
-		List<CurrencyRate> resultListOfCurrencyRates = service.findTopLowestCurrencyRatesForTheCurrency(currencyCode, topCount);
+		//Given&When
+		List<CurrencyRate> resultListOfCurrencyRates = service.findTopLowestCurrencyRatesForTheCurrency(CURRENCY_CODE, TOP_MIN_OR_MAX_VALUES);
 		//Then
-		Assert.assertEquals(topCount, resultListOfCurrencyRates.size());
+		Assert.assertEquals(TOP_MIN_OR_MAX_VALUES, resultListOfCurrencyRates.size());
 	}
 	
 	@Test
 	public void testFindTopHighestCurrencyRatesForTheCurrency(){
-		//Given
-		String currencyCode = "USD";
-		int topCount = 5;
-		//When
-		List<CurrencyRate> resultListOfCurrencyRates = service.findTopHighestCurrencyRatesForTheCurrency(currencyCode, topCount);
+		//Given&When
+		List<CurrencyRate> resultListOfCurrencyRates = service.findTopHighestCurrencyRatesForTheCurrency(CURRENCY_CODE, TOP_MIN_OR_MAX_VALUES);
 		//Then
-		Assert.assertEquals(topCount, resultListOfCurrencyRates.size());
+		Assert.assertEquals(TOP_MIN_OR_MAX_VALUES, resultListOfCurrencyRates.size());
 	}
 	
 	@Test
 	public void testFindCountriesWithAtLeastTwoCurrencies(){
 		//Given
 		saveCountriesToDB();
+		int existingNumberOfCurrenciesMatchingCiteria = 7;
 		//When
 		List<Country> resultCountries = service.findCountriesWithAtLeastTwoCurrencies();
 		//Then
-		Assert.assertEquals(7, resultCountries.size());
+		Assert.assertEquals(existingNumberOfCurrenciesMatchingCiteria, resultCountries.size());
 	}
 	
 	@Test
 	public void testFindCurrenciesWithMinimumRateDifferenceInPeriod(){
 		//Given
-		LocalDate from = LocalDate.of(2018, 4, 20);
-		LocalDate to = LocalDate.of(2018, 4, 25);
+		int existingNumberOfCurrenciesMatchingCiteria = 1;
 		//When
-		List<Currency> resultCurrencies = service.findCurrenciesWithMinimumRateDifferenceInPeriod(from, to);
+		List<Currency> resultCurrencies = service.findCurrenciesWithMinimumRateDifferenceInPeriod(TEST_FROM_DATE, TEST_TO_DATE);
 		//Then
-		Assert.assertEquals(14, resultCurrencies.size());
+		Assert.assertEquals(existingNumberOfCurrenciesMatchingCiteria, resultCurrencies.size());
 	}
 	
 	@Test
 	public void testFindCurrenciesWithMaximumRateDifferenceInPeriod(){
 		//Given
-		LocalDate from = LocalDate.of(2018, 4, 20);
-		LocalDate to = LocalDate.of(2018, 4, 25);
+		int existingNumberOffCurrenciesMatchingCriteria = 1;
+		String existingCurrencyCodeOfCurrencyMatchingCriteria= "XDR";
 		//When
-		List<Currency> resultCurrencies = service.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
+		List<Currency> resultCurrencies = service.findCurrenciesWithMaximumRateDifferenceInPeriod(TEST_FROM_DATE, TEST_TO_DATE);
 		//Then
-		Assert.assertEquals(1, resultCurrencies.size());
-		Assert.assertEquals("XDR", resultCurrencies.get(0).getCode());
+		Assert.assertEquals(existingNumberOffCurrenciesMatchingCriteria, resultCurrencies.size());
+		Assert.assertEquals(existingCurrencyCodeOfCurrencyMatchingCriteria, resultCurrencies.get(0).getCode());
 	}
 	
 	private void saveCountriesToDB(){

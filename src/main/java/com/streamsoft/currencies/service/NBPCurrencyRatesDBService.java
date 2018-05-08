@@ -38,8 +38,11 @@ public class NBPCurrencyRatesDBService {
 	}
 	
 	public Optional<CurrencyRate> getCurrencyRateFromDbByDateAndCurrencyCode(LocalDate date, String currencyCode){
-		RateSession rateSession = rateSessionDao.findByEffectiveDate(date).get();
-		return currencyRateDao.findByRateSessionAndCurrencyCode(rateSession, currencyCode);
+		Optional<RateSession> rateSession = rateSessionDao.findByEffectiveDate(date);
+		if(rateSession.isPresent()) {
+			return currencyRateDao.findByRateSessionAndCurrencyCode(rateSession.get(), currencyCode);
+		}
+		return Optional.empty();
 	}
 	
 	public void saveOrUpdateCurrencyRateToDb(CurrencyRate currencyRate){

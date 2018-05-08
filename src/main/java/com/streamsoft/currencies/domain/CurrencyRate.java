@@ -1,6 +1,7 @@
 package com.streamsoft.currencies.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -8,6 +9,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "CURRENCY_RATES")
 public class CurrencyRate {
+	private static final int SCALE_OF_CURRENCY_RATE = 6;
+	private static final int PRECISION_OF_CURRENCY_RATE = 12;
+	
 	private Long id;
 	private RateSession rateSession;
 	private Currency currency;
@@ -47,9 +51,9 @@ public class CurrencyRate {
 		return currency;
 	}
 
-	@Column(name = "MID")
+	@Column(name = "MID", precision = PRECISION_OF_CURRENCY_RATE, scale = SCALE_OF_CURRENCY_RATE)
 	public BigDecimal getMid() {
-		return mid;
+		return mid.setScale(SCALE_OF_CURRENCY_RATE, RoundingMode.UP);
 	}
 
 	@Column(name = "BID")
@@ -116,5 +120,12 @@ public class CurrencyRate {
 			return false;
 		return true;
 	}
-	
+
+	public static int getScaleOfCurrencyRate() {
+		return SCALE_OF_CURRENCY_RATE;
+	}
+
+	public static int getPrecisionOfCurrencyRate() {
+		return PRECISION_OF_CURRENCY_RATE;
+	}
 }
