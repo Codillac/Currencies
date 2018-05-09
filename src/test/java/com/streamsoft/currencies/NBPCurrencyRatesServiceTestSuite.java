@@ -1,7 +1,9 @@
 package com.streamsoft.currencies;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,10 @@ import com.streamsoft.currencies.service.NBPCurrencyRatesService;
 @SpringBootTest
 public class NBPCurrencyRatesServiceTestSuite {
 	@Autowired
-	NBPCurrencyRatesService service;
+	NBPCurrencyRatesService currencyRatesService;
 	
 	@Autowired
-	NBPCurrencyRatesDBService dbS;
+	NBPCurrencyRatesDBService dbService;
 	
 	@Test
 	public void testGetCurrencyRate() {
@@ -27,9 +29,14 @@ public class NBPCurrencyRatesServiceTestSuite {
 		String code = "USD";
 		LocalDate date = LocalDate.of(2018, 4, 25);
 		//When
-		CurrencyRate resultRate = service.getCurrencyRate(code, date);
+		CurrencyRate resultRate = currencyRatesService.getCurrencyRate(code, date);
+		BigDecimal fromDbRateValue = dbService.getCurrencyRateFromDbByDateAndCurrencyCode(date, code).get().getMid();
 		//Then
-		System.out.println(resultRate.getMid());
-		System.out.println(dbS.getCurrencyRateFromDbByDateAndCurrencyCode(date, code).get().getMid());
+		Assert.assertEquals(resultRate.getMid(), fromDbRateValue);
+	}
+	
+	@Test
+	public void testGetAndSaveMillionCurrencyRates() {
+		currencyRatesService.getAndSaveMillionCurrencyRates();
 	}
 }

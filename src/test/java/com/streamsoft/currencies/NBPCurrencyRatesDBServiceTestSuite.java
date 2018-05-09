@@ -62,7 +62,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testGetCurrencyRateFromDbByDateAndCurrencyCode(){
+	public void testGetCurrencyRateFromDbByDateAndCurrencyCode() {
 		//Given
 		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.454800).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
@@ -71,7 +71,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindMinimumCurrencyMidRateValueInPeriod(){
+	public void testFindMinimumCurrencyMidRateValueInPeriod() {
 		//Given
 		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.388100).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
@@ -81,7 +81,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindMaximumCurrencyMidRateValueInPeriod(){
+	public void testFindMaximumCurrencyMidRateValueInPeriod() {
 		//Given
 		BigDecimal existingCurrencyRate = BigDecimal.valueOf(3.454800).setScale(DECIMAL_SCALE_OF_CURRENCY_RATE);
 		//When
@@ -91,7 +91,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindTopLowestCurrencyRatesForTheCurrency(){
+	public void testFindTopLowestCurrencyRatesForTheCurrency() {
 		//Given&When
 		List<CurrencyRate> resultListOfCurrencyRates = service.findTopLowestCurrencyRatesForTheCurrency(CURRENCY_CODE, TOP_MIN_OR_MAX_VALUES);
 		//Then
@@ -99,7 +99,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindTopHighestCurrencyRatesForTheCurrency(){
+	public void testFindTopHighestCurrencyRatesForTheCurrency() {
 		//Given&When
 		List<CurrencyRate> resultListOfCurrencyRates = service.findTopHighestCurrencyRatesForTheCurrency(CURRENCY_CODE, TOP_MIN_OR_MAX_VALUES);
 		//Then
@@ -107,7 +107,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindCountriesWithAtLeastTwoCurrencies(){
+	public void testFindCountriesWithAtLeastTwoCurrencies() {
 		//Given
 		saveCountriesToDB();
 		int existingNumberOfCurrenciesMatchingCiteria = 7;
@@ -118,7 +118,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindCurrenciesWithMinimumRateDifferenceInPeriod(){
+	public void testFindCurrenciesWithMinimumRateDifferenceInPeriod() {
 		//Given
 		int existingNumberOfCurrenciesMatchingCiteria = 1;
 		//When
@@ -128,7 +128,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 	}
 	
 	@Test
-	public void testFindCurrenciesWithMaximumRateDifferenceInPeriod(){
+	public void testFindCurrenciesWithMaximumRateDifferenceInPeriod() {
 		//Given
 		int existingNumberOffCurrenciesMatchingCriteria = 1;
 		String existingCurrencyCodeOfCurrencyMatchingCriteria= "XDR";
@@ -139,7 +139,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		Assert.assertEquals(existingCurrencyCodeOfCurrencyMatchingCriteria, resultCurrencies.get(0).getCode());
 	}
 	
-	private void saveCountriesToDB(){
+	private void saveCountriesToDB() {
 		List<Country> countries = prepareTestCountries();
 		Set<Currency> currencies = prepareTestCurrenciesFromCountries(countries);
 		for(Currency tempCurrency : currencies) {
@@ -150,7 +150,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		}
 	}
 	
-	private List<Country> prepareTestCountries(){
+	private List<Country> prepareTestCountries() {
 		List<CurrencyRate> currencyRates = getCurrencyRatesFromNBPService.getCurrencyRatesFromTable("A");
 		List<Country> listOfCountries = new ArrayList<>();
 		listOfCountries.add(new Country("Stany Zjednoczone", "US"));
@@ -197,7 +197,7 @@ public class NBPCurrencyRatesDBServiceTestSuite {
 		}
 		return listOfCountries;
 	}
-	private Set<Currency> prepareTestCurrenciesFromCountries(List<Country> countries){
+	private Set<Currency> prepareTestCurrenciesFromCountries(List<Country> countries) {
 		Set<Currency> currencies = new HashSet<>();
 		for(Country tempCountry : countries){
 			Set<Currency> tempSet = tempCountry.getCurrencies();
