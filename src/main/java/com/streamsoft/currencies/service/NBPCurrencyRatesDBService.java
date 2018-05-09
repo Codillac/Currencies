@@ -117,4 +117,8 @@ public class NBPCurrencyRatesDBService {
 			currencyDao.save(currency);
 		}
 	}
+	
+	public long countAllCurrencyRatesInDb() {
+		return currencyRateDao.count();
+	}
 }
