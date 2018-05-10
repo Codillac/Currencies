@@ -3,10 +3,7 @@ package com.streamsoft.currencies.repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import java.math.BigDecimal;
 
 import javax.transaction.Transactional;
 
@@ -68,10 +65,10 @@ public interface CurrencyDao extends CrudRepository<Currency, Long> {
 //			+ "where rts.effectiveDate between :from and :to "
 //			+ "group by cr) from crrt) "
 //			+ "group by cr ")
-	@Query("select new Map(cr, (max(crt.mid) - min(crt.mid))) from Currency cr "
+	@Query("select cr, (max(crt.mid) - min(crt.mid)) from Currency cr "
 			+ "join cr.currencyRates crt "
 			+ "join crt.rateSession rts "
 			+ "where rts.effectiveDate between :from and :to "
 			+ "group by cr.code")
-	Map<Currency, BigDecimal> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
+	List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }
