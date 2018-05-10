@@ -2,7 +2,9 @@ package com.streamsoft.currencies.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,24 +68,24 @@ public class NBPCurrencyRatesDBService {
 		}
 	}
 	
-	public void deleteCurrencyRateFromDb(CurrencyRate currencyRate){
+	public void deleteCurrencyRateFromDb(CurrencyRate currencyRate) {
 		currencyRateDao.delete(currencyRate);
 	}
 	
-	public BigDecimal findMinimumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
+	public BigDecimal findMinimumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to) {
 		return currencyRateDao.findMinimumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 	}
 	
-	public BigDecimal findMaximumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to){
+	public BigDecimal findMaximumCurrencyMidRateValueInPeriod(String currencyCode,LocalDate from, LocalDate to) {
 		return currencyRateDao.findMaximumCurrencyMidRateValueInPeriod(currencyCode, from, to);
 	}
 	
-	public List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
+	public List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(String currencyCode, int topCount) {
 		Pageable queryLimit = PageRequest.of(0, topCount);
 		return currencyRateDao.findTopLowestCurrencyRatesForTheCurrency(currencyCode, queryLimit);
 	}
 	
-	public List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(String currencyCode, int topCount){
+	public List<CurrencyRate> findTopHighestCurrencyRatesForTheCurrency(String currencyCode, int topCount) {
 		Pageable queryLimit = PageRequest.of(0, topCount);
 		return currencyRateDao.findTopHighestCurrencyRatesForTheCurrency(currencyCode, queryLimit);
 	}
@@ -92,15 +94,28 @@ public class NBPCurrencyRatesDBService {
 		return countryDao.findCountriesWithAtLeastTwoCurrencies();
 	}
 	
-	public List<Currency> findCurrenciesWithMinimumRateDifferenceInPeriod(LocalDate from, LocalDate to){
+	public List<Currency> findCurrenciesWithMinimumRateDifferenceInPeriod(LocalDate from, LocalDate to) {
 		return currencyDao.findCurrenciesWithMinimumRateDifferenceInPeriod(from, to);
 	}
 	
-	public List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(LocalDate from, LocalDate to){
-		return currencyDao.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
+	public List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(LocalDate from, LocalDate to) {
+		Map<Currency, BigDecimal> resultMap = currencyDao.findCurrenciesWithMaximumRateDifferenceInPeriod(from, to);
+		BigDecimal maxDifference = BigDecimal.ZERO;
+		List<Currency> matchingCurrencies = new ArrayList<>();
+		for(Map.Entry<Currency, BigDecimal> entry : resultMap.entrySet()) {
+			BigDecimal presentValue = entry.getValue();
+			maxDifference = maxDifference.max(presentValue);
+		}
+		for(Map.Entry<Currency, BigDecimal> entry : resultMap.entrySet()) {
+			BigDecimal presentValue = entry.getValue();
+			if(presentValue.equals(maxDifference)) {
+				matchingCurrencies.add(entry.getKey());
+			}
+		}
+		return matchingCurrencies;
 	}
 	
-	public void saveOrUpdateCountryToDb(Country country){
+	public void saveOrUpdateCountryToDb(Country country) {
 		Optional<Country> existingCountry = countryDao.findByCode(country.getCode());
 		if(existingCountry.isPresent()){
 			country.setId(existingCountry.get().getId());

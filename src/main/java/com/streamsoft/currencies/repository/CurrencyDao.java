@@ -3,7 +3,10 @@ package com.streamsoft.currencies.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import java.math.BigDecimal;
 
 import javax.transaction.Transactional;
 
@@ -43,20 +46,20 @@ public interface CurrencyDao extends CrudRepository<Currency, Long> {
 //			+ "group by cr ")
 	List<Currency> findCurrenciesWithMinimumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
 	
-	@Query(value = "select * from currencies where currencies.id_currency = any (select ids from ("
-			+ "select (max(mid) - min(mid)) as diffs, currency_rates.id_currency as ids from currency_rates "
-			+ "join rate_sessions on rate_sessions.id_rate_session = currency_rates.id_rate_session "
-			+ "where rate_sessions.eff_date between :from and :to "
-			+ "group by currency_rates.id_currency "
-			+ "order by diffs asc) mxvalues "
-			+ "join currencies on currencies.id_currency = ids "
-			+ "where diffs = (select max(mxvalue.diff) from "
-			+ "(select (max(mid) - min(mid)) as diff from currency_rates "
-			+ "join rate_sessions on rate_sessions.id_rate_session = currency_rates.id_rate_session "
-			+ "where rate_sessions.eff_date between :from and :to "
-			+ "group by currency_rates.id_currency "
-			+ "order by diff asc) mxvalue) "
-			+ "order by ids)", nativeQuery = true)
+//	@Query(value = "select * from currencies where currencies.id_currency = any (select ids from ("
+//			+ "select (max(mid) - min(mid)) as diffs, currency_rates.id_currency as ids from currency_rates "
+//			+ "join rate_sessions on rate_sessions.id_rate_session = currency_rates.id_rate_session "
+//			+ "where rate_sessions.eff_date between :from and :to "
+//			+ "group by currency_rates.id_currency "
+//			+ "order by diffs asc) mxvalues "
+//			+ "join currencies on currencies.id_currency = ids "
+//			+ "where diffs = (select max(mxvalue.diff) from "
+//			+ "(select (max(mid) - min(mid)) as diff from currency_rates "
+//			+ "join rate_sessions on rate_sessions.id_rate_session = currency_rates.id_rate_session "
+//			+ "where rate_sessions.eff_date between :from and :to "
+//			+ "group by currency_rates.id_currency "
+//			+ "order by diff asc) mxvalue) "
+//			+ "order by ids)", nativeQuery = true)
 //	@Query("select cr from Currency cr "
 //			+ "join cr.currencyRates crrt "
 //			+ "join crrt.rateSession rts "
@@ -65,5 +68,10 @@ public interface CurrencyDao extends CrudRepository<Currency, Long> {
 //			+ "where rts.effectiveDate between :from and :to "
 //			+ "group by cr) from crrt) "
 //			+ "group by cr ")
-	List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
+	@Query("select new Map(cr, (max(crt.mid) - min(crt.mid))) from Currency cr "
+			+ "join cr.currencyRates crt "
+			+ "join crt.rateSession rts "
+			+ "where rts.effectiveDate between :from and :to "
+			+ "group by cr.code")
+	Map<Currency, BigDecimal> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }
