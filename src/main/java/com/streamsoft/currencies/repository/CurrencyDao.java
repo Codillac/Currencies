@@ -76,7 +76,6 @@ public interface CurrencyDao extends CrudRepository<Currency, Long> {
 	@Query("select crt.currency from CurrencyRate crt "
 			+ "join crt.rateSession rts "
 			+ "where rts.effectiveDate between :from and :to "
-			+ "and  "
 			+ "group by crt.currency")
 	List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }
