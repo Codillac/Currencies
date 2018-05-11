@@ -65,10 +65,18 @@ public interface CurrencyDao extends CrudRepository<Currency, Long> {
 //			+ "where rts.effectiveDate between :from and :to "
 //			+ "group by cr) from crrt) "
 //			+ "group by cr ")
-	@Query("select cr, (max(crt.mid) - min(crt.mid)) from Currency cr "
-			+ "join cr.currencyRates crt "
+//	@Query("select cr from Currency cr "
+//			+ "join fetch cr.currencyRates crrt "
+//			+ "join crrt.rateSession rts "
+//			+ "where rts.effectiveDate between :from and :to "
+//			+ "and (select max(crrt.mid) - min(crrt.mid) from crrt "
+//			+ "where rts.effectiveDate between :from and :to "
+//			+ "group by cr) = '0.082200' "
+//			+ "group by cr")
+	@Query("select crt.currency from CurrencyRate crt "
 			+ "join crt.rateSession rts "
 			+ "where rts.effectiveDate between :from and :to "
-			+ "group by cr.code")
+			+ "and  "
+			+ "group by crt.currency")
 	List<Currency> findCurrenciesWithMaximumRateDifferenceInPeriod(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }

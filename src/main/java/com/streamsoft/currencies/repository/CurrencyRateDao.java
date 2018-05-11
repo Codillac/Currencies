@@ -28,19 +28,19 @@ public interface CurrencyRateDao extends CrudRepository<CurrencyRate, Long> {
 	Optional<CurrencyRate> findById(Long id);
 	
 	@Query("select min(crrt.mid) from CurrencyRate crrt "
-			+ "inner join crrt.currency cr "
-			+ "inner join crrt.rateSession rs "
+			+ "join crrt.currency cr "
+			+ "join crrt.rateSession rs "
 			+ "where cr.code = :currencyCode and rs.effectiveDate between :from and :to")
 	BigDecimal findMinimumCurrencyMidRateValueInPeriod(@Param("currencyCode")String currencyCode, @Param("from") LocalDate from, @Param("to") LocalDate to);
 	
 	@Query("select max(crrt.mid) from CurrencyRate crrt "
-			+ "inner join crrt.currency cr "
-			+ "inner join crrt.rateSession rs "
+			+ "join crrt.currency cr "
+			+ "join crrt.rateSession rs "
 			+ "where cr.code = :currencyCode and rs.effectiveDate between :from and :to")
 	BigDecimal findMaximumCurrencyMidRateValueInPeriod(@Param("currencyCode")String currencyCode, @Param("from") LocalDate from, @Param("to") LocalDate to);
 		
 	@Query(value = "select crrt from CurrencyRate crrt "
-			+ "inner join crrt.currency cr "
+			+ "join crrt.currency cr "
 			+ "where cr.code = :currencyCode order by crrt.mid asc")
 	List<CurrencyRate> findTopLowestCurrencyRatesForTheCurrency(@Param("currencyCode") String currencyCode, Pageable pageable);
 		
